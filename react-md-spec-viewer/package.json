@@ -1,0 +1,26 @@
+{
+  "name": "react-md-spec-viewer",
+  "version": "1.0.0",
+  "description": "Interactive React viewer for blueprint Markdown files and product specs.",
+  "type": "module",
+  "scripts": {
+    "generate-content": "node scripts/generate-content.mjs",
+    "predev": "npm run generate-content",
+    "dev": "vite --host 127.0.0.1",
+    "prebuild": "npm run generate-content",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@vitejs/plugin-react": "^6.1.0",
+    "lucide-react": "^1.34.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
+    "vite": "^8.2.2"
+  }
+}
