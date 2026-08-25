@@ -9,8 +9,12 @@ Define a React.js website that turns the existing Markdown blueprint and `produc
 - Display all existing top-level Markdown documents from `00-index.md` through `20-final-approved-operating-model.md`.
 - Display all Markdown content from the existing `product-specs` tree.
 - Provide an interactive folder tree that preserves the original `product-specs` hierarchy.
+- Ensure the left navigation tree remains scrollable when the available viewport is smaller than the full folder structure.
+- Allow the left navigation to collapse and expand on tablet and mobile viewports.
+- Use full viewport height for the expanded mobile left navigation.
 - Provide a Markdown preview panel with readable typography, headings, tables, code blocks, and links.
 - Provide a CLI-inspired command panel for quick navigation and document discovery.
+- Allow the terminal panel to collapse, and keep terminal output scrollable without visible scrollbars.
 - Keep the UI clean, simple, fast, and focused on reading specs.
 - Keep dependencies, generated content, build output, local environment files, logs, and editor files out of Git.
 

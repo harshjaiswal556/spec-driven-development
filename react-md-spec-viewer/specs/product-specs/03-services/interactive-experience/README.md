@@ -1,3 +1,3 @@
 ﻿# Interactive Experience
 
-Owns CLI-inspired navigation, search interactions, and reader productivity shortcuts.
+Owns CLI-inspired navigation, collapsible terminal behavior, search interactions, and reader productivity shortcuts.

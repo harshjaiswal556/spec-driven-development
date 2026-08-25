@@ -28,6 +28,10 @@ input {
   overflow: hidden;
 }
 
+.app-shell > * {
+  min-height: 0;
+}
+
 .sidebar,
 .right-rail {
   min-width: 0;
@@ -39,6 +43,8 @@ input {
 .sidebar {
   display: flex;
   flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
   border-width: 0 1px 0 0;
 }
 
@@ -46,6 +52,10 @@ input {
   display: grid;
   grid-template-rows: minmax(150px, 35%) 1fr auto;
   border-width: 0 0 0 1px;
+}
+
+.right-rail.terminal-collapsed {
+  grid-template-rows: minmax(0, 1fr) auto auto;
 }
 
 .sidebar header {
@@ -82,6 +92,16 @@ input {
   border: 1px solid #cdd5df;
   border-radius: 999px;
   padding: 4px 8px;
+}
+
+.nav-toggle {
+  display: none;
+  color: #2f3b4f;
+}
+
+.sidebar .nav-toggle:hover {
+  border-color: #c6d0dc;
+  background: #ebeff3;
 }
 
 .search-panel {
@@ -148,7 +168,9 @@ input {
   flex: 1;
   min-height: 0;
   padding: 10px 8px 18px;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .tree-row {
@@ -320,11 +342,37 @@ input {
 .panel-title {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 8px;
   min-height: 40px;
   padding: 0 14px;
   border-bottom: 1px solid #d8dee4;
   text-transform: uppercase;
+}
+
+.panel-title > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.icon-button {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.icon-button:hover {
+  border-color: #3a4657;
+  background: #182331;
 }
 
 .outline-panel,
@@ -356,6 +404,10 @@ input {
   color: #c9d4df;
 }
 
+.terminal-panel.collapsed {
+  grid-template-rows: auto;
+}
+
 .terminal-panel .panel-title {
   border-bottom-color: #26313f;
   color: #95a3b6;
@@ -363,11 +415,16 @@ input {
 
 .terminal-output {
   overflow: auto;
+  scrollbar-width: none;
   padding: 12px 14px;
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   font-size: 12px;
   line-height: 1.55;
   white-space: pre-wrap;
+}
+
+.terminal-output::-webkit-scrollbar {
+  display: none;
 }
 
 .terminal-input {
@@ -399,7 +456,27 @@ input {
     grid-template-columns: minmax(230px, 300px) minmax(0, 1fr);
   }
 
+  .app-shell.nav-collapsed {
+    grid-template-columns: 56px minmax(0, 1fr);
+  }
+
   .right-rail {
+    display: none;
+  }
+
+  .nav-toggle {
+    display: grid;
+  }
+
+  .app-shell.nav-collapsed .sidebar header {
+    justify-content: center;
+    padding: 12px;
+  }
+
+  .app-shell.nav-collapsed .sidebar header div,
+  .app-shell.nav-collapsed .sidebar header span,
+  .app-shell.nav-collapsed .search-panel,
+  .app-shell.nav-collapsed .tree-panel {
     display: none;
   }
 }
@@ -407,18 +484,32 @@ input {
 @media (max-width: 760px) {
   .app-shell {
     grid-template-columns: 1fr;
-    grid-template-rows: 42vh 58vh;
+    grid-template-rows: 100vh minmax(0, 100vh);
     overflow: auto;
   }
 
+  .app-shell.nav-collapsed {
+    grid-template-columns: 1fr;
+    grid-template-rows: 56px minmax(0, 1fr);
+  }
+
   .sidebar {
+    height: 100vh;
     min-height: 0;
     border-width: 0 0 1px;
+  }
+
+  .app-shell.nav-collapsed .sidebar {
+    height: 56px;
   }
 
   .preview {
     height: auto;
     min-height: 58vh;
+  }
+
+  .app-shell.nav-collapsed .preview {
+    min-height: calc(100vh - 56px);
   }
 
   .markdown-body {

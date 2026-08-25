@@ -4,6 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import {
   ChevronDown,
+  ChevronLeft,
   ChevronRight,
   FileText,
   Folder,
@@ -181,7 +182,7 @@ function resolveLocalHref(currentPath, href = '') {
   return stack.join('/');
 }
 
-function TerminalPanel({ activePath, onSelect }) {
+function TerminalPanel({ activePath, onSelect, collapsed, onToggleCollapsed }) {
   const [input, setInput] = useState('');
   const [cwd, setCwd] = useState('');
   const [lines, setLines] = useState([
@@ -261,27 +262,43 @@ function TerminalPanel({ activePath, onSelect }) {
   }
 
   return (
-    <section className="terminal-panel" aria-label="Command terminal">
+    <section className={`terminal-panel ${collapsed ? 'collapsed' : ''}`} aria-label="Command terminal">
       <div className="panel-title">
-        <Terminal size={16} />
-        <span>terminal</span>
+        <div>
+          <Terminal size={16} />
+          <span>terminal</span>
+        </div>
+        <button
+          type="button"
+          className="icon-button"
+          onClick={onToggleCollapsed}
+          aria-expanded={!collapsed}
+          aria-label={collapsed ? 'Expand terminal' : 'Collapse terminal'}
+          title={collapsed ? 'Expand terminal' : 'Collapse terminal'}
+        >
+          {collapsed ? <ChevronRight size={16} /> : <ChevronDown size={16} />}
+        </button>
       </div>
-      <div className="terminal-output">
-        {lines.map((line, index) => (
-          <div key={`${line}-${index}`}>{line}</div>
-        ))}
-      </div>
-      <form
-        className="terminal-input"
-        onSubmit={(event) => {
-          event.preventDefault();
-          runCommand(input);
-          setInput('');
-        }}
-      >
-        <span>{cwd || '~'}</span>
-        <input value={input} onChange={(event) => setInput(event.target.value)} aria-label="Terminal command" />
-      </form>
+      {!collapsed && (
+        <>
+          <div className="terminal-output">
+            {lines.map((line, index) => (
+              <div key={`${line}-${index}`}>{line}</div>
+            ))}
+          </div>
+          <form
+            className="terminal-input"
+            onSubmit={(event) => {
+              event.preventDefault();
+              runCommand(input);
+              setInput('');
+            }}
+          >
+            <span>{cwd || '~'}</span>
+            <input value={input} onChange={(event) => setInput(event.target.value)} aria-label="Terminal command" />
+          </form>
+        </>
+      )}
     </section>
   );
 }
@@ -383,11 +400,13 @@ function Outline({ document }) {
 
 function App() {
   const [activePath, setActivePath] = useState(initialPath);
+  const [navCollapsed, setNavCollapsed] = useState(false);
+  const [terminalCollapsed, setTerminalCollapsed] = useState(false);
   const tree = useMemo(() => buildTree(documents), []);
   const activeDocument = byPath.get(activePath);
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell ${navCollapsed ? 'nav-collapsed' : ''}`}>
       <aside className="sidebar">
         <header>
           <div>
@@ -395,6 +414,16 @@ function App() {
             <h1>Spec Browser</h1>
           </div>
           <span>{documents.length} docs</span>
+          <button
+            type="button"
+            className="icon-button nav-toggle"
+            onClick={() => setNavCollapsed((value) => !value)}
+            aria-expanded={!navCollapsed}
+            aria-label={navCollapsed ? 'Expand navigation' : 'Collapse navigation'}
+            title={navCollapsed ? 'Expand navigation' : 'Collapse navigation'}
+          >
+            {navCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+          </button>
         </header>
         <SearchBox onSelect={setActivePath} />
         <nav className="tree-panel" aria-label="Document tree">
@@ -404,9 +433,14 @@ function App() {
 
       <MarkdownPreview document={activeDocument} onSelect={setActivePath} />
 
-      <aside className="right-rail">
+      <aside className={`right-rail ${terminalCollapsed ? 'terminal-collapsed' : ''}`}>
         <Outline document={activeDocument} />
-        <TerminalPanel activePath={activePath} onSelect={setActivePath} />
+        <TerminalPanel
+          activePath={activePath}
+          onSelect={setActivePath}
+          collapsed={terminalCollapsed}
+          onToggleCollapsed={() => setTerminalCollapsed((value) => !value)}
+        />
         <footer>Generated {new Date(generatedAt).toLocaleString()}</footer>
       </aside>
     </div>
